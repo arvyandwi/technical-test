@@ -5,10 +5,12 @@ import com.technicalTest.technicaltest.exception.NotFoundException;
 import com.technicalTest.technicaltest.repository.RoleRepository;
 import com.technicalTest.technicaltest.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import static com.technicalTest.technicaltest.entity.UserRole.ADMIN_ROLE;
 import static com.technicalTest.technicaltest.entity.UserRole.USER_ROLE;
 
+@Service
 public class RoleServiceImpl implements RoleService {
 
     @Autowired

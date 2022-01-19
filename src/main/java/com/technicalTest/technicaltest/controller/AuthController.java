@@ -2,7 +2,10 @@ package com.technicalTest.technicaltest.controller;
 
 import com.technicalTest.technicaltest.entity.Role;
 import com.technicalTest.technicaltest.entity.User;
+import com.technicalTest.technicaltest.entity.UserDetailImpl;
+import com.technicalTest.technicaltest.request.LoginRequest;
 import com.technicalTest.technicaltest.request.RegisterRequest;
+import com.technicalTest.technicaltest.response.LoginResponse;
 import com.technicalTest.technicaltest.response.RegisterResponse;
 import com.technicalTest.technicaltest.response.WebResponse;
 import com.technicalTest.technicaltest.security.jwt.JwtUtils;
@@ -12,6 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,6 +69,34 @@ public class AuthController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
+                .body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<WebResponse<?>> login(@RequestBody LoginRequest request) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getUsername(),
+                        request.getPassword()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
+        UserDetailImpl userDetail = (UserDetailImpl) authentication.getPrincipal();
+        Set<String> roles = new HashSet<>();
+        for (GrantedAuthority authority : userDetail.getAuthorities()) {
+            roles.add(authority.getAuthority());
+        }
+        LoginResponse loginResponse = new LoginResponse(jwt, roles);
+
+        WebResponse<?> response = new WebResponse<>(
+                "Successfully Login",
+                loginResponse);
+
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(response);
     }
 }

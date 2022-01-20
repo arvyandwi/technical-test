@@ -5,4 +5,4 @@ This is An API where you can rent a venue/facility. You can create a schedule, v
 
 You can register and login with token authorization.
 
-As of now, the API is still in development.
+As of now, it is still in development.

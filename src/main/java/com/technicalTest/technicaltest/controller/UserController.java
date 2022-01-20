@@ -22,9 +22,9 @@ public class UserController {
     @GetMapping
     public ResponseEntity<WebResponse<List<User>>> getUsers() {
         List<User> users = userService.getAll();
-        WebResponse<List<User>> response = new WebResponse<>("Fetched all users", users);
+        WebResponse<List<User>> response = new WebResponse<>("Fetched All Users", users);
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(HttpStatus.CREATED)
                 .body(response);
     }
 }
